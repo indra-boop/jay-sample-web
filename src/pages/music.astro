@@ -1,0 +1,11 @@
+---
+import MusicSection from "@/components/sections/MusicSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getReleases, hiddenSections } from "@/lib/content";
+import { releaseJsonLd } from "@/lib/seo";
+---
+
+<BaseLayout title="Music" description="Music releases and live sets by Jay Sample." hiddenNav={hiddenSections()} jsonLd={getReleases().map(releaseJsonLd)}>
+  <div class="page-top"></div>
+  <MusicSection variant="full" index="01" />
+</BaseLayout>

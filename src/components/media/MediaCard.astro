@@ -1,0 +1,90 @@
+---
+/**
+ * MediaCard — normalized thumbnail (aspect-ratio container + object-fit: cover).
+ * Images open the lightbox (button); videos link out (never autoplay in-page).
+ */
+import type { MediaItem } from "@/types/content";
+import { withBase } from "@/lib/url";
+
+interface Props {
+  item: MediaItem;
+  index: number;
+  ratio?: string;
+  sizes?: string;
+}
+const { item, index, ratio = "4 / 5", sizes = "(min-width: 1024px) 33vw, 50vw" } = Astro.props;
+const img = item.image;
+const srcset = img.srcset ? Object.entries(img.srcset).map(([w, s]) => `${withBase(s)} ${w}w`).join(", ") : undefined;
+const label = item.caption || img.alt;
+---
+
+<figure class="mdc reveal" style={`--ratio: ${ratio}`}>
+  {
+    item.kind === "video" && item.videoUrl ? (
+      <a class="mdc__hit" href={item.videoUrl} target="_blank" rel="noopener noreferrer" aria-label={`Watch: ${label} (opens in a new tab)`}>
+        <img src={withBase(img.src)} srcset={srcset} sizes={sizes} width={img.width} height={img.height} alt="" loading="lazy" decoding="async" />
+        <span class="mdc__play meta" aria-hidden="true">Watch ▶</span>
+      </a>
+    ) : (
+      <button
+        type="button"
+        class="mdc__hit"
+        data-lightbox-index={index}
+        data-full={withBase(item.fullSrc ?? img.src)}
+        data-alt={img.alt}
+        data-caption={item.caption ?? ""}
+        data-credit={img.credit ?? ""}
+        aria-label={`View larger: ${label}`}
+      >
+        <img src={withBase(img.src)} srcset={srcset} sizes={sizes} width={img.width} height={img.height} alt={img.alt} loading="lazy" decoding="async" />
+      </button>
+    )
+  }
+  {(item.caption || img.credit) && <figcaption class="meta mdc__cap">{[item.caption, img.credit].filter(Boolean).join(" — ")}</figcaption>}
+</figure>
+
+<style>
+  .mdc {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .mdc__hit {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ratio);
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: var(--surface);
+    cursor: zoom-in;
+  }
+  a.mdc__hit {
+    cursor: pointer;
+  }
+  .mdc__hit img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.15);
+    transition:
+      transform var(--motion-slow) var(--ease-cinematic),
+      filter var(--motion-slow);
+  }
+  .mdc__hit:hover img {
+    transform: scale(1.035);
+    filter: none;
+  }
+  .mdc__play {
+    position: absolute;
+    left: var(--space-4);
+    bottom: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    background: var(--action-primary);
+    color: var(--action-primary-foreground);
+  }
+  .mdc__cap {
+    color: var(--foreground-subtle);
+    letter-spacing: 0.12em;
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+/** Live video (YouTube / Vimeo) — click-to-load embeds from supplied URLs only. Audio mixes live in MusicSection. */
+import LiveSetEmbed from "@/components/media/LiveSetEmbed.astro";
+import { getVideoSets } from "@/lib/content";
+
+interface Props {
+  limit?: number | undefined;
+  headingLevel?: 2 | 3;
+}
+const { limit, headingLevel = 3 } = Astro.props;
+const sets = getVideoSets().slice(0, limit);
+const H = `h${headingLevel}` as "h2" | "h3";
+---
+
+{
+  sets.length > 0 && (
+    <div class="ls">
+      <H class="meta ls__h">Live video</H>
+      <div class="ls__grid">
+        {sets.map((s) => (
+          <LiveSetEmbed set={s} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .ls {
+    margin-bottom: var(--space-16);
+  }
+  .ls__h {
+    margin-bottom: var(--space-6);
+    color: var(--foreground-subtle);
+  }
+  .ls__grid {
+    display: grid;
+    gap: var(--space-10) var(--space-6);
+  }
+  @media (min-width: 1024px) {
+    .ls__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

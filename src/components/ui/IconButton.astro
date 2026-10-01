@@ -1,0 +1,40 @@
+---
+/** Icon-only button: accessible name is mandatory (`label`). Min 44×44 touch target. */
+interface Props {
+  label: string;
+  type?: "button" | "submit";
+  class?: string;
+  attrs?: Record<string, string | boolean | undefined>;
+}
+const { label, type = "button", class: className, attrs = {} } = Astro.props;
+---
+
+<button type={type} class:list={["icon-btn", className]} aria-label={label} {...attrs}>
+  <slot />
+</button>
+
+<style>
+  .icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: var(--control-height);
+    height: var(--control-height);
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+  .icon-btn:hover {
+    border-color: var(--metal-mid);
+    background: var(--surface-hover);
+  }
+  .icon-btn :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+</style>

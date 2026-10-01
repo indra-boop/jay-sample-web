@@ -1,0 +1,10 @@
+---
+import EventsSection from "@/components/sections/EventsSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hiddenSections } from "@/lib/content";
+---
+
+<BaseLayout title="Events" description="Upcoming and past Jay Sample events." hiddenNav={hiddenSections()}>
+  <div class="page-top"></div>
+  <EventsSection variant="full" index="02" />
+</BaseLayout>

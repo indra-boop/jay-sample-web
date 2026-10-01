@@ -1,0 +1,54 @@
+---
+/** MediaGrid — asymmetric editorial grid (12-col: 7/5 · 4/4/4 · 5/7 rhythm). */
+import type { MediaItem } from "@/types/content";
+import Lightbox from "./Lightbox.astro";
+import MediaCard from "./MediaCard.astro";
+
+interface Props {
+  items: MediaItem[];
+}
+const { items } = Astro.props;
+// Pattern repeats every 5 items: [span, ratio]
+const pattern: [number, string][] = [
+  [7, "4 / 3"],
+  [5, "4 / 5"],
+  [4, "1 / 1"],
+  [4, "4 / 5"],
+  [4, "1 / 1"],
+];
+---
+
+<div class="mdg">
+  {
+    items.map((item, i) => {
+      const [span, ratio] = pattern[i % pattern.length]!;
+      return (
+        <div class="mdg__cell" style={`--span: ${span}`}>
+          <MediaCard item={item} index={i} ratio={ratio} sizes={`(min-width: 1024px) ${Math.round((span / 12) * 100)}vw, 50vw`} />
+        </div>
+      );
+    })
+  }
+</div>
+<Lightbox />
+
+<style>
+  .mdg {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mdg__cell:first-child {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 1024px) {
+    .mdg {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+    .mdg__cell,
+    .mdg__cell:first-child {
+      grid-column: span var(--span);
+    }
+  }
+</style>

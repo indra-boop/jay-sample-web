@@ -1,0 +1,118 @@
+---
+/** 02 — Upcoming. Home: next 5 upcoming. /events: upcoming rows + past cards. */
+import EventList from "@/components/events/EventList.astro";
+import Button from "@/components/ui/Button.astro";
+import GapNotice from "@/components/ui/GapNotice.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { getEvents } from "@/lib/content";
+import { isPreview } from "@/lib/content-mode";
+
+interface Props {
+  variant?: "teaser" | "full";
+  index?: string;
+}
+const { variant = "teaser", index = "02" } = Astro.props;
+const { upcoming, past } = getEvents();
+const shown = variant === "teaser" ? upcoming.slice(0, 5) : upcoming;
+const render = upcoming.length > 0 || isPreview || variant === "full";
+---
+
+{
+  render && (
+    <section id="events" class="section" aria-labelledby="events-title">
+      <div class="container">
+        <SectionHeading index={index} title={variant === "teaser" ? "Upcoming" : "Events"} id="events-title" level={variant === "full" ? 1 : 2}>
+          {variant === "teaser" && (upcoming.length > 5 || past.length > 0) && (
+            <Button slot="action" href="/events" variant="ghost" arrow>
+              All events
+            </Button>
+          )}
+        </SectionHeading>
+
+        {variant === "full" && <h2 class="meta sub">Upcoming</h2>}
+        {shown.length > 0 ? (
+          <EventList events={shown} upcoming label="Upcoming events" />
+        ) : isPreview ? (
+          <ul role="list" class="ghost" aria-hidden="true">
+            {[0, 1, 2].map(() => (
+              <li class="ghost__row">
+                <span class="ghost__bar ghost__bar--date" />
+                <span class="ghost__bar ghost__bar--title" />
+                <span class="ghost__bar ghost__bar--city" />
+                <span class="ghost__bar ghost__bar--cta" />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="prose">New dates will be announced here.</p>
+        )}
+        {upcoming.length === 0 && <GapNotice area="events" only={["upcoming events"]} />}
+
+        {variant === "full" && (
+          <div class="past">
+            <h2 class="meta sub">Past events</h2>
+            {past.length > 0 ? <EventList events={past} variant="cards" label="Past events" /> : <GapNotice area="events" only={["past events"]} />}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .sub {
+    margin-bottom: var(--space-6);
+    color: var(--foreground-subtle);
+  }
+  .past {
+    margin-top: var(--space-20);
+  }
+  .ghost {
+    margin: 0 0 var(--space-6);
+  }
+  .ghost__row {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--border-strong);
+  }
+  .ghost__row:last-child {
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .ghost__bar {
+    height: 0.9rem;
+    background: var(--surface-raised);
+  }
+  .ghost__bar--date {
+    grid-row: span 2;
+    height: 2.4rem;
+  }
+  .ghost__bar--title {
+    width: 70%;
+    height: 1.4rem;
+  }
+  .ghost__bar--city {
+    width: 40%;
+  }
+  .ghost__bar--cta {
+    grid-column: 1 / -1;
+    height: var(--control-height);
+    background: none;
+    border: 1px solid var(--border);
+  }
+  @media (min-width: 768px) {
+    .ghost__row {
+      grid-template-columns: 7rem 2.2fr 1fr 9rem;
+      align-items: center;
+      gap: var(--space-8);
+      padding-block: var(--space-8);
+    }
+    .ghost__bar--date {
+      grid-row: auto;
+    }
+    .ghost__bar--cta {
+      grid-column: auto;
+    }
+  }
+</style>

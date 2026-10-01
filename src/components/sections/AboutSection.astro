@@ -1,0 +1,148 @@
+---
+/** 03 — Jay Sample. Large monochrome portrait + concise bio + verified details only. */
+import { artist } from "@/data/artist";
+import Badge from "@/components/ui/Badge.astro";
+import Button from "@/components/ui/Button.astro";
+import GapNotice from "@/components/ui/GapNotice.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { getArtist } from "@/lib/content";
+import { isPreview } from "@/lib/content-mode";
+import { withBase } from "@/lib/url";
+
+interface Props {
+  variant?: "teaser" | "full";
+  index?: string;
+}
+const { variant = "teaser", index = "03" } = Astro.props;
+const a = getArtist();
+const bio = a.bio ?? [];
+const paragraphs = variant === "teaser" ? bio.slice(0, 2) : bio;
+const details = [
+  ["Genres", a.genres?.join(", ")],
+  ["Origin", a.origin],
+  ["Based in", a.basedIn],
+  ["Influences", a.influences?.join(", ")],
+  ["Residencies", a.residencies?.join(", ")],
+  ["Notable venues", a.notableVenues?.join(", ")],
+  ["Collaborations", a.collaborations?.join(", ")],
+].filter((d): d is [string, string] => Boolean(d[1]));
+const hasContent = bio.length > 0 || Boolean(a.portrait);
+const render = hasContent || isPreview || variant === "full";
+---
+
+{
+  render && (
+    <section id="about" class="section" aria-labelledby="about-title">
+      <div class="container">
+        <SectionHeading index={index} title="Jay Sample" id="about-title" level={variant === "full" ? 1 : 2} metal />
+        <div class="about">
+          <div class="about__portrait reveal">
+            {a.portrait ? (
+              <figure>
+                <img
+                  src={withBase(a.portrait.src)}
+                  srcset={a.portrait.srcset ? Object.entries(a.portrait.srcset).map(([w, s]) => `${withBase(s)} ${w}w`).join(", ") : undefined}
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  width={a.portrait.width}
+                  height={a.portrait.height}
+                  alt={a.portrait.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {a.portrait.credit && <figcaption class="meta">{a.portrait.credit}</figcaption>}
+              </figure>
+            ) : (
+              isPreview && <div class="about__ghost" aria-hidden="true" />
+            )}
+          </div>
+          <div class="about__text reveal">
+            {isPreview && paragraphs.length > 0 && artist.bio?.status !== "DATA FINAL" && (
+              <Badge tone="muted">Draft copy · {artist.bio?.status}</Badge>
+            )}
+            {paragraphs.length > 0 ? (
+              <div class="prose">
+                {paragraphs.map((p) => (
+                  <p>{p}</p>
+                ))}
+              </div>
+            ) : (
+              !isPreview && <p class="prose">Biography coming soon.</p>
+            )}
+            {details.length > 0 && (
+              <dl class="about__details">
+                {details.map(([k, v]) => (
+                  <div>
+                    <dt class="meta">{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            {variant === "teaser" && bio.length > 2 && (
+              <Button href="/about" variant="ghost" arrow>
+                Full biography
+              </Button>
+            )}
+            <GapNotice area="about" />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-10);
+  }
+  @media (min-width: 1024px) {
+    .about {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: var(--space-16);
+      align-items: end;
+    }
+  }
+  .about__portrait figure {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .about__portrait img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+  }
+  .about__ghost {
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(60% 50% at 50% 38%, var(--surface-hover), transparent 70%),
+      var(--surface);
+  }
+  .about__text {
+    display: grid;
+    gap: var(--space-8);
+    align-content: end;
+  }
+  .about__text > :global(.badge),
+  .about__text > :global(.btn) {
+    justify-self: start;
+  }
+  .about__details {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    border-top: 1px solid var(--border-strong);
+    padding-top: var(--space-6);
+  }
+  .about__details div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-4);
+  }
+  .about__details dd {
+    margin: 0;
+    color: var(--foreground-muted);
+  }
+</style>

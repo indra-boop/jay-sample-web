@@ -1,0 +1,114 @@
+---
+/**
+ * Header — fixed. On the home hero it starts transparent and turns solid as you scroll
+ * (CSS scroll-driven animation; browsers without support get the solid fallback).
+ */
+import ArtistMark from "@/components/brand/ArtistMark.astro";
+import Button from "@/components/ui/Button.astro";
+import IconButton from "@/components/ui/IconButton.astro";
+import MobileMenu from "./MobileMenu.astro";
+import Navigation from "./Navigation.astro";
+
+interface Props {
+  overlay?: boolean;
+  hidden?: readonly string[];
+}
+const { overlay = false, hidden = [] } = Astro.props;
+---
+
+<header class:list={["hdr", overlay && "hdr--overlay"]}>
+  <div class="hdr__inner container">
+    <ArtistMark priority={!overlay} class="hdr__mark" />
+    <nav aria-label="Primary" class="hdr__nav">
+      <Navigation hidden={hidden} />
+    </nav>
+    <div class="hdr__actions">
+      <Button href="/booking" variant="secondary" class="hdr__cta">Book Jay Sample</Button>
+      <IconButton label="Open menu" class="hdr__menu" attrs={{ "data-modal-open": "mobile-menu", "aria-haspopup": "dialog", "aria-expanded": "false", "aria-controls": "mobile-menu" }}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M4 8h16M4 16h16"></path>
+        </svg>
+      </IconButton>
+    </div>
+  </div>
+</header>
+<MobileMenu hidden={hidden} />
+
+<style>
+  .hdr {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-header);
+    background: color-mix(in oklch, var(--background) 88%, transparent);
+    border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .hdr__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    height: var(--header-height);
+    max-width: var(--container-wide);
+  }
+  .hdr__nav {
+    display: none;
+  }
+  .hdr__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .hdr__actions :global(.hdr__cta) {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .hdr__nav {
+      display: block;
+      margin-inline: auto;
+    }
+    .hdr__actions :global(.hdr__cta) {
+      display: inline-flex;
+    }
+    .hdr__actions :global(.hdr__menu) {
+      display: none;
+    }
+  }
+
+  /* Overlay variant: transparent at top of the hero, solid after ~40vh of scroll. */
+  @media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hdr--overlay {
+      animation: hdr-solid linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 40vh;
+    }
+    .hdr--overlay :global(.hdr__mark) {
+      animation: hdr-mark linear both;
+      animation-timeline: scroll(root);
+      animation-range: 30vh 60vh;
+    }
+  }
+  }
+  @keyframes hdr-solid {
+    from {
+      background: transparent;
+      border-bottom-color: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  /* Hide the small mark while the big hero logo is on screen — never two logos competing. */
+  @keyframes hdr-mark {
+    from {
+      opacity: 0;
+      visibility: hidden;
+    }
+    to {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+</style>

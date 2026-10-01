@@ -1,0 +1,39 @@
+---
+/**
+ * ArtistMark — compact header/footer use of the logotype (no monogram drawn:
+ * official monogram = DATA BELUM ADA). Renders as a home link.
+ */
+import { withBase } from "@/lib/url";
+import JaySampleLogo from "./JaySampleLogo.astro";
+
+interface Props {
+  href?: string;
+  size?: "sm" | "md";
+  priority?: boolean;
+  class?: string;
+}
+const { href = "/", size = "sm", priority = false, class: className } = Astro.props;
+---
+
+<a href={withBase(href)} class:list={["mark", `mark--${size}`, className]} aria-label="Jay Sample — home">
+  <JaySampleLogo decorative priority={priority} sizes={size === "sm" ? "120px" : "180px"} />
+</a>
+
+<style>
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding-block: var(--space-1);
+    transition: opacity var(--transition-fast);
+  }
+  .mark:hover {
+    opacity: 0.85;
+  }
+  .mark--sm {
+    width: clamp(88px, 22vw, 120px);
+  }
+  .mark--md {
+    width: clamp(120px, 30vw, 180px);
+  }
+</style>

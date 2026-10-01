@@ -1,0 +1,34 @@
+---
+/** EventList — `rows` (editorial) or `cards` (grid). Emits MusicEvent JSON-LD per event. */
+import { eventJsonLd, ldJson } from "@/lib/seo";
+import type { ArtistEvent } from "@/types/content";
+import EventCard from "./EventCard.astro";
+import EventRow from "./EventRow.astro";
+
+interface Props {
+  events: ArtistEvent[];
+  variant?: "rows" | "cards";
+  upcoming?: boolean;
+  label: string;
+}
+const { events, variant = "rows", upcoming = false, label } = Astro.props;
+---
+
+<ul role="list" class:list={["el", `el--${variant}`]} aria-label={label} data-upcoming={upcoming ? "" : undefined}>
+  {events.map((e) => (variant === "rows" ? <EventRow event={e} past={!upcoming} /> : <EventCard event={e} />))}
+</ul>
+{events.map((e) => <script type="application/ld+json" set:html={ldJson(eventJsonLd(e))} />)}
+<script>
+  import "@/client/events";
+</script>
+
+<style>
+  .el {
+    margin: 0;
+  }
+  .el--cards {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+</style>

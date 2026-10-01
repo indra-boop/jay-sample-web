@@ -1,0 +1,85 @@
+---
+/**
+ * Component QA page — SYNTHETIC FIXTURE DATA ONLY (like jerco-design-system fixtures/consumer).
+ * noindex, excluded from sitemap, and deleted from dist/ in production builds (scripts/postbuild.mjs).
+ * Purpose: verify MusicCard / EventRow / EventCard / MediaGrid / Lightbox / long-text wrapping.
+ */
+import EventList from "@/components/events/EventList.astro";
+import MediaGrid from "@/components/media/MediaGrid.astro";
+import MusicGrid from "@/components/music/MusicGrid.astro";
+import Badge from "@/components/ui/Badge.astro";
+import Button from "@/components/ui/Button.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import type { ArtistEvent, MediaItem, Release } from "@/types/content";
+
+const FX = "SYNTHETIC FIXTURE";
+const releases: Release[] = ["a", "b", "c"].map((k, i) => ({
+  id: `fx-${k}`,
+  title: i === 0 ? `${FX} — Extended release title that needs to wrap gracefully` : `${FX} ${k.toUpperCase()}`,
+  type: (["EP", "Single", "Remix"] as const)[i]!,
+  releaseDate: `202${4 + i}-0${i + 1}-15`,
+  artwork: { src: `/qa/cover-${k}.jpg`, width: 1200, height: 1200, alt: `${FX} artwork ${k}` },
+  links: i === 0 ? { spotify: "https://example.com/fixture", soundcloud: "https://example.com/fixture", beatport: "https://example.com/fixture" } : { spotify: "https://example.com/fixture" },
+  featured: i === 0,
+  status: "ASSUMPTION",
+}));
+const events: ArtistEvent[] = [
+  { id: "fx-1", date: "2099-10-12", venue: `${FX} Venue`, city: "City", country: "Country", ticketUrl: "https://example.com/fixture", eventStatus: "on-sale", status: "ASSUMPTION" },
+  { id: "fx-2", date: "2099-11-03", eventName: `${FX} — An extremely long event name to test wrapping across narrow phone viewports without overflow`, venue: `${FX} Venue With A Long Name`, city: "Very Long City Name", country: "Country", eventStatus: "sold-out", status: "ASSUMPTION" },
+  { id: "fx-3", date: "2099-12-31", venue: `${FX} Venue`, city: "City", country: "Country", eventStatus: "announced", status: "ASSUMPTION" },
+];
+const past: ArtistEvent[] = events.map((e, i) => ({ ...e, id: `fx-p${i}`, date: `2020-0${i + 1}-01` }));
+const media: MediaItem[] = [1, 2, 3, 4, 5].map((n) => {
+  const tall = n === 2 || n === 4;
+  return {
+    id: `fx-m${n}`,
+    kind: "performance",
+    image: { src: `/qa/media-${n}.jpg`, width: n === 1 ? 1600 : 1200, height: tall ? 1500 : 1200, alt: `${FX} image ${n}`, credit: "Fixture credit" },
+    caption: `${FX} ${n}`,
+    status: "ASSUMPTION",
+  };
+});
+---
+
+<BaseLayout title="Component QA" noindex>
+  <div class="page-top"></div>
+  <section class="section">
+    <div class="container qa">
+      <p class="meta">Internal · noindex · synthetic data — not Jay Sample content</p>
+      <SectionHeading index="QA" title="Buttons" id="qa-buttons" level={1} />
+      <div class="row">
+        <Button href="#qa-buttons">Primary</Button>
+        <Button href="#qa-buttons" variant="secondary">Secondary</Button>
+        <Button href="#qa-buttons" variant="ghost" arrow>Ghost</Button>
+        <Button disabled>Disabled</Button>
+        <Badge>Outline</Badge><Badge tone="neutral">Neutral</Badge><Badge tone="muted">Muted</Badge>
+      </div>
+
+      <SectionHeading index="QA" title="MusicGrid" id="qa-music" />
+      <MusicGrid releases={releases} />
+
+      <SectionHeading index="QA" title="EventList rows" id="qa-events" />
+      <EventList events={events} upcoming label="Fixture upcoming" />
+
+      <SectionHeading index="QA" title="EventList cards" id="qa-past" />
+      <EventList events={past} variant="cards" label="Fixture past" />
+
+      <SectionHeading index="QA" title="MediaGrid + Lightbox" id="qa-media" />
+      <MediaGrid items={media} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .qa {
+    display: grid;
+    gap: var(--space-16);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+/** Renders only platforms with a real https URL. Nothing configured → renders nothing. */
+import type { MusicPlatform } from "@/types/content";
+import { configuredLinks, musicPlatformLabel, musicPlatformOrder } from "@/lib/platforms";
+
+interface Props {
+  links: Partial<Record<MusicPlatform, string>>;
+  title: string;
+}
+const { links, title } = Astro.props;
+const items = configuredLinks(links, musicPlatformOrder);
+---
+
+{
+  items.length > 0 && (
+    <ul role="list" class="pl" aria-label={`Listen to ${title}`}>
+      {items.map(({ key, url }) => (
+        <li>
+          <a href={url} target="_blank" rel="noopener noreferrer" class="pl__link">
+            {musicPlatformLabel[key]}
+            <span class="visually-hidden">— {title} (opens in a new tab)</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .pl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-5);
+    margin: 0;
+  }
+  .pl__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-size: var(--font-size-2xs);
+    font-stretch: var(--font-stretch-meta);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-meta);
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .pl__link:hover {
+    color: var(--foreground);
+    text-decoration: underline;
+  }
+</style>

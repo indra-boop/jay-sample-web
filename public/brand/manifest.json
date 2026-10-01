@@ -1,0 +1,188 @@
+{
+  "source": {
+    "file": "brand-source/jay-sample-logo-master-supplied.png",
+    "sha256": "a5b682e558d133af605a43dc596cb0772b08d3c5acec3696369e284901ae47d9",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA raster",
+    "vector_master": "DATA BELUM ADA"
+  },
+  "optical_bounds": {
+    "alpha_threshold": 8,
+    "bbox": [
+      3,
+      70,
+      1732,
+      843
+    ],
+    "width": 1729,
+    "height": 773,
+    "aspect_ratio": 2.2367
+  },
+  "exports": [
+    {
+      "file": "brand/logo/jay-sample-logo-primary-480w.avif",
+      "role": "logo-primary",
+      "width": 480,
+      "height": 215,
+      "bytes": 14592,
+      "sha256": "a09ce1c4fe7d25dce7710beeef116e80343c2b1a75972d8f64ab7ccc06172dc0",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-480w.webp",
+      "role": "logo-primary",
+      "width": 480,
+      "height": 215,
+      "bytes": 26582,
+      "sha256": "66bd4ed1761785dd4bd463460e4d4361f4aa0a7f8ae417819ec9539a48bdf7e4",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-480w.png",
+      "role": "logo-primary",
+      "width": 480,
+      "height": 215,
+      "bytes": 101169,
+      "sha256": "b216d2baadbb8b4540d31690dca9c3e70ecdf9290d2cd3cd627ff5cd6e0e39f8",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-800w.avif",
+      "role": "logo-primary",
+      "width": 800,
+      "height": 358,
+      "bytes": 24538,
+      "sha256": "cc8b134c41dea700d821936db0414e12b9ebee221a0249fa5f851eff7196ccd7",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-800w.webp",
+      "role": "logo-primary",
+      "width": 800,
+      "height": 358,
+      "bytes": 48582,
+      "sha256": "4a3524d6e913e97016c894eb4cacdd35b777bc4a38f9667044448a4d95d5ca74",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-800w.png",
+      "role": "logo-primary",
+      "width": 800,
+      "height": 358,
+      "bytes": 226331,
+      "sha256": "7e572da2119e3fa53a6259d557eca97602516894213d6d1b1c0710c40f60c9c3",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1200w.avif",
+      "role": "logo-primary",
+      "width": 1200,
+      "height": 536,
+      "bytes": 41816,
+      "sha256": "780223bc25bee99b232590b73f7ca3e7dd8a6353c81b0a54ba75e201d9c6487b",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1200w.webp",
+      "role": "logo-primary",
+      "width": 1200,
+      "height": 536,
+      "bytes": 82128,
+      "sha256": "5a5831e13f4d84cbd9ea94901f6951ffb894009130a7e83e9ba645206466cc6e",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1200w.png",
+      "role": "logo-primary",
+      "width": 1200,
+      "height": 536,
+      "bytes": 443699,
+      "sha256": "338e6f98c5bdbce1307fb9953ded080c1c7183ce15cf817dbc46b3bf3a712c8e",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1600w.avif",
+      "role": "logo-primary",
+      "width": 1600,
+      "height": 715,
+      "bytes": 56587,
+      "sha256": "764c9188ba7a21edca38127e4751a749dcc971ecbacbd3a9ddc2433f015e9214",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1600w.webp",
+      "role": "logo-primary",
+      "width": 1600,
+      "height": 715,
+      "bytes": 119962,
+      "sha256": "0dd7be5f2813ab5b444465c5778e80390df52af145cba510aebbdfbfe41185ff",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/logo/jay-sample-logo-primary-1600w.png",
+      "role": "logo-primary",
+      "width": 1600,
+      "height": 715,
+      "bytes": 710317,
+      "sha256": "2a6a2196a937ceb0d9e7d4d97cf9e4528ee8f87eb86fc146a821baac7e65285e",
+      "status": "DATA FINAL (derived from supplied raster)"
+    },
+    {
+      "file": "brand/icons/jay-sample-avatar-512.png",
+      "role": "icon-interim",
+      "width": 512,
+      "height": 512,
+      "bytes": 87945,
+      "sha256": "7532b52035c2e822eda6fba3738db9aa7a7ecbb45c78205e470187743f7c49dc",
+      "status": "ASSUMPTION (interim; monogram DATA BELUM ADA)"
+    },
+    {
+      "file": "brand/icons/jay-sample-icon-192.png",
+      "role": "icon-interim",
+      "width": 192,
+      "height": 192,
+      "bytes": 21024,
+      "sha256": "110cfa999cef0c2ddf3f2096bf99d5ae89a47c71d06b09b702662d90cfc65aed",
+      "status": "ASSUMPTION (interim; monogram DATA BELUM ADA)"
+    },
+    {
+      "file": "brand/icons/apple-touch-icon.png",
+      "role": "icon-interim",
+      "width": 180,
+      "height": 180,
+      "bytes": 18906,
+      "sha256": "132bdd365df63372e328e6c8b4eded14be62c541461decadce79c57cf629fcc0",
+      "status": "ASSUMPTION (interim; monogram DATA BELUM ADA)"
+    },
+    {
+      "file": "brand/icons/favicon-48.png",
+      "role": "icon-interim",
+      "width": 48,
+      "height": 48,
+      "bytes": 1626,
+      "sha256": "84c6ce5f78281150db061b4104062db58894a14ed20cd12139911558ee4cebc7",
+      "status": "ASSUMPTION (interim; monogram DATA BELUM ADA)"
+    },
+    {
+      "file": "brand/icons/favicon-32.png",
+      "role": "icon-interim",
+      "width": 32,
+      "height": 32,
+      "bytes": 843,
+      "sha256": "fae1fb1e5721c77f33193e211b4abd0d56cb3bebbfbc7d71d14d81e218424934",
+      "status": "ASSUMPTION (interim; monogram DATA BELUM ADA)"
+    },
+    {
+      "file": "brand/jay-sample-og.jpg",
+      "role": "opengraph",
+      "width": 1200,
+      "height": 630,
+      "bytes": 49177,
+      "sha256": "cb7726566c5419e5e9401d651b30a9bc91a3ada167bf8dc4ca95b5c048e0a7f4",
+      "status": "ASSUMPTION (composition pending owner approval)"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+---
+/**
+ * 05 — Book Jay Sample. Home: minimal CTA. /booking: full form + confirmed contacts.
+ * Contacts (email / management / WhatsApp) render only when verified.
+ */
+import BookingForm from "@/components/booking/BookingForm.astro";
+import Button from "@/components/ui/Button.astro";
+import GapNotice from "@/components/ui/GapNotice.astro";
+import { booking } from "@/data/booking";
+import { verified } from "@/lib/content";
+
+interface Props {
+  variant?: "teaser" | "full";
+  index?: string;
+}
+const { variant = "teaser", index = "05" } = Astro.props;
+const email = verified(booking.bookingEmail);
+const management = verified(booking.management);
+const whatsapp = verified(booking.whatsapp);
+const Title = variant === "full" ? "h1" : "h2";
+---
+
+<section id="booking" class:list={["section book", `book--${variant}`]} aria-labelledby="booking-title">
+  <div class="book__glow" aria-hidden="true"></div>
+  <div class="container book__inner">
+    <p class="meta book__index" aria-hidden="true">{index} — Booking</p>
+    <Title id="booking-title" class="display metal-text book__title reveal">Book Jay Sample</Title>
+
+    {
+      variant === "teaser" ? (
+        <div class="book__cta reveal">
+          <p class="book__lede">For bookings and enquiries, share your event details.</p>
+          <Button href="/booking" variant="primary" size="lg" arrow>
+            Send a booking request
+          </Button>
+        </div>
+      ) : (
+        <div class="book__full">
+          <BookingForm />
+          {(email || management || whatsapp) && (
+            <aside class="book__contacts" aria-label="Direct booking contacts">
+              <p class="meta">Direct contact</p>
+              <ul role="list">
+                {email && (
+                  <li>
+                    <a href={`mailto:${email}`}>{email}</a>
+                  </li>
+                )}
+                {management && (
+                  <li>
+                    {management.name}
+                    {management.email && (
+                      <>
+                        {" "}
+                        · <a href={`mailto:${management.email}`}>{management.email}</a>
+                      </>
+                    )}
+                  </li>
+                )}
+                {whatsapp && (
+                  <li>
+                    <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`} target="_blank" rel="noopener noreferrer">
+                      WhatsApp {whatsapp}
+                      <span class="visually-hidden"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </aside>
+          )}
+          <GapNotice area="booking" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .book {
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .book__glow {
+    position: absolute;
+    inset: auto 0 -20%;
+    height: 70%;
+    z-index: -1;
+    background: radial-gradient(50% 60% at 50% 100%, color-mix(in oklch, var(--metal-mid) 8%, transparent), transparent);
+  }
+  .book__inner {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .book--teaser .book__inner {
+    justify-items: center;
+    text-align: center;
+  }
+  .book__index {
+    color: var(--foreground-subtle);
+  }
+  .book__title {
+    font-size: var(--font-size-4xl);
+  }
+  .book__cta {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-8);
+  }
+  .book__lede {
+    max-width: 32rem;
+    color: var(--foreground-muted);
+    font-size: var(--font-size-lg);
+  }
+  .book__full {
+    display: grid;
+    gap: var(--space-12);
+    margin-top: var(--space-8);
+  }
+  @media (min-width: 1024px) {
+    .book__full {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      align-items: start;
+    }
+    .book__full > :global(.gap) {
+      grid-column: 1 / -1;
+    }
+  }
+  .book__contacts {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    border: 1px solid var(--border-strong);
+  }
+  .book__contacts ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+  }
+  .book__contacts a {
+    color: var(--foreground);
+    overflow-wrap: anywhere;
+  }
+</style>

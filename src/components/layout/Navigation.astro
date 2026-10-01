@@ -1,0 +1,98 @@
+---
+/** Primary navigation list. Used by Header (desktop) and MobileMenu (stacked). */
+import { navItems } from "@/data/site";
+import { withBase } from "@/lib/url";
+
+interface Props {
+  variant?: "inline" | "stacked";
+  /** Section keys to hide (e.g. empty sections in production). */
+  hidden?: readonly string[];
+}
+const { variant = "inline", hidden = [] } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const items = navItems.filter((i) => !hidden.includes(i.section));
+---
+
+<ul role="list" class:list={["nav", `nav--${variant}`]}>
+  {
+    items.map((item, i) => (
+      <li>
+        <a href={withBase(item.href)} class="nav__link" aria-current={path === withBase(item.href) ? "page" : undefined}>
+          {variant === "stacked" && (
+            <span class="nav__index meta" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+          )}
+          <span class="nav__label">{item.label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .nav {
+    display: flex;
+    margin: 0;
+  }
+  .nav--inline {
+    gap: clamp(var(--space-4), 2.2vw, var(--space-8));
+  }
+  .nav--stacked {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    min-height: var(--tap-min);
+    align-items: center;
+    color: var(--foreground-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .nav--inline .nav__link {
+    font-size: var(--font-size-xs);
+    font-stretch: var(--font-stretch-meta);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-meta);
+    text-transform: uppercase;
+  }
+  .nav--inline .nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    height: 1px;
+    background: var(--gradient-metal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-normal);
+  }
+  .nav__link:hover,
+  .nav__link[aria-current="page"] {
+    color: var(--foreground);
+  }
+  .nav--inline .nav__link:hover::after,
+  .nav--inline .nav__link[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+  .nav--stacked .nav__label {
+    font-size: clamp(2.25rem, 11vw, 4rem);
+    font-stretch: var(--font-stretch-display);
+    font-weight: var(--font-weight-black);
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .nav--stacked .nav__link[aria-current="page"] .nav__label {
+    color: var(--metal-mid);
+    background: var(--gradient-metal);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import BookingSection from "@/components/sections/BookingSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hiddenSections } from "@/lib/content";
+---
+
+<BaseLayout title="Booking" description="Book Jay Sample — send a booking request." hiddenNav={hiddenSections()}>
+  <div class="page-top"></div>
+  <BookingSection variant="full" index="05" />
+</BaseLayout>

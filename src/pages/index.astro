@@ -1,0 +1,28 @@
+---
+import AboutSection from "@/components/sections/AboutSection.astro";
+import BookingSection from "@/components/sections/BookingSection.astro";
+import EventsSection from "@/components/sections/EventsSection.astro";
+import Hero from "@/components/sections/Hero.astro";
+import MediaSection from "@/components/sections/MediaSection.astro";
+import MusicSection from "@/components/sections/MusicSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getMixes, getReleases, getSocials, hiddenSections } from "@/lib/content";
+import { isPreview } from "@/lib/content-mode";
+import { releaseJsonLd } from "@/lib/seo";
+
+const hidden = hiddenSections();
+// LISTEN NOW → music section when it renders; else the artist's Mixcloud profile; else hidden.
+const hasMusic = getReleases().length > 0 || getMixes().length > 0 || isPreview;
+const mixcloud = getSocials().find((s) => s.platform === "mixcloud")?.url;
+const listenHref = hasMusic ? "#music" : mixcloud;
+const listenExternal = !hasMusic && Boolean(mixcloud);
+---
+
+<BaseLayout overlayHeader hiddenNav={hidden} jsonLd={getReleases().slice(0, 3).map(releaseJsonLd)}>
+  <Hero listenHref={listenHref} listenExternal={listenExternal} />
+  <MusicSection />
+  <EventsSection />
+  <AboutSection />
+  <MediaSection />
+  <BookingSection />
+</BaseLayout>

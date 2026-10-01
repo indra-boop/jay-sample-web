@@ -1,0 +1,10 @@
+---
+import AboutSection from "@/components/sections/AboutSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hiddenSections } from "@/lib/content";
+---
+
+<BaseLayout title="About" description="About Jay Sample — DJ / Artist." hiddenNav={hiddenSections()}>
+  <div class="page-top"></div>
+  <AboutSection variant="full" index="03" />
+</BaseLayout>

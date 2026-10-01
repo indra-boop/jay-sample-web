@@ -1,0 +1,135 @@
+---
+/**
+ * Button — renders <a> when `href` is set, otherwise <button>.
+ * Variants: primary (solid silver) · secondary (outline) · ghost (text + arrow).
+ * States: default / hover / focus-visible / active / disabled (aria-disabled for links).
+ */
+import type { HTMLAttributes } from "astro/types";
+import { withBase } from "@/lib/url";
+
+type Variant = "primary" | "secondary" | "ghost";
+interface Props {
+  href?: string | undefined;
+  variant?: Variant;
+  size?: "md" | "lg";
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  external?: boolean;
+  block?: boolean;
+  arrow?: boolean;
+  class?: string;
+  attrs?: HTMLAttributes<"a"> & HTMLAttributes<"button">;
+}
+
+const { href: rawHref, variant = "primary", size = "md", type = "button", disabled = false, external = false, block = false, arrow = false, class: className, attrs = {} } = Astro.props;
+const href = withBase(rawHref);
+const classes = ["btn", `btn--${variant}`, `btn--${size}`, block && "btn--block", className];
+---
+
+{
+  href && !disabled ? (
+    <a href={href} class:list={classes} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} {...attrs}>
+      <span class="btn__label"><slot /></span>
+      {arrow && <span class="btn__arrow" aria-hidden="true">→</span>}
+      {external && <span class="visually-hidden">(opens in a new tab)</span>}
+    </a>
+  ) : href && disabled ? (
+    <a role="link" aria-disabled="true" class:list={classes} {...attrs}>
+      <span class="btn__label"><slot /></span>
+    </a>
+  ) : (
+    <button type={type} class:list={classes} disabled={disabled} {...attrs}>
+      <span class="btn__label"><slot /></span>
+      {arrow && <span class="btn__arrow" aria-hidden="true">→</span>}
+    </button>
+  )
+}
+
+<style>
+  .btn {
+    --_h: var(--control-height);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    min-height: var(--_h);
+    min-width: var(--tap-min);
+    padding: 0 var(--control-padding-x);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-stretch: var(--font-stretch-meta);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-button);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+  .btn--lg {
+    --_h: 3.5rem;
+    padding-inline: var(--space-8);
+  }
+  .btn--block {
+    width: 100%;
+  }
+
+  .btn--primary {
+    background: var(--action-primary);
+    color: var(--action-primary-foreground);
+  }
+  .btn--primary:hover {
+    background: var(--action-primary-hover);
+  }
+
+  .btn--secondary {
+    background: var(--action-secondary);
+    color: var(--foreground);
+    border-color: var(--border-input);
+  }
+  .btn--secondary:hover {
+    background: var(--action-secondary-hover);
+    border-color: var(--metal-mid);
+  }
+
+  .btn--ghost {
+    min-height: var(--tap-min);
+    padding-inline: 0;
+    background: none;
+    color: var(--foreground);
+  }
+  .btn--ghost .btn__label {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    padding-bottom: 2px;
+    transition: background-size var(--transition-normal);
+  }
+  .btn--ghost:hover .btn__label {
+    background-size: 100% 1px;
+  }
+
+  .btn__arrow {
+    transition: transform var(--transition-normal);
+  }
+  .btn:hover .btn__arrow {
+    transform: translateX(4px);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+    transform: none;
+  }
+  .btn--primary:disabled:hover {
+    background: var(--action-primary);
+  }
+</style>

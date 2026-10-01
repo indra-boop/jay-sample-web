@@ -1,0 +1,82 @@
+---
+/** 04 — Live / Media. Live sets (click-to-load) + asymmetric gallery with lightbox. */
+import MediaGrid from "@/components/media/MediaGrid.astro";
+import Button from "@/components/ui/Button.astro";
+import GapNotice from "@/components/ui/GapNotice.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { getMedia, getVideoSets } from "@/lib/content";
+import { isPreview } from "@/lib/content-mode";
+import LiveSetSection from "./LiveSetSection.astro";
+
+interface Props {
+  variant?: "teaser" | "full";
+  index?: string;
+}
+const { variant = "teaser", index = "04" } = Astro.props;
+const all = getMedia();
+const items = variant === "teaser" ? all.slice(0, 5) : all;
+const sets = getVideoSets();
+const empty = items.length === 0 && sets.length === 0;
+const render = !empty || isPreview || variant === "full";
+---
+
+{
+  render && (
+    <section id="media" class="section" aria-labelledby="media-title">
+      <div class="container">
+        <SectionHeading index={index} title={variant === "teaser" ? "Live / Media" : "Media"} id="media-title" level={variant === "full" ? 1 : 2}>
+          {variant === "teaser" && all.length > 5 && (
+            <Button slot="action" href="/media" variant="ghost" arrow>
+              All media
+            </Button>
+          )}
+        </SectionHeading>
+
+        <LiveSetSection limit={variant === "teaser" ? 1 : undefined} />
+
+        {items.length > 0 ? (
+          <MediaGrid items={items} />
+        ) : isPreview ? (
+          <div class="ghost" aria-hidden="true">
+            <span style="--s: 7; --r: 4 / 3" />
+            <span style="--s: 5; --r: 4 / 5" />
+            <span style="--s: 4; --r: 1" />
+            <span style="--s: 4; --r: 4 / 5" />
+            <span style="--s: 4; --r: 1" />
+          </div>
+        ) : (
+          sets.length === 0 && <p class="prose">Photos and video will be published here.</p>
+        )}
+        {empty && <GapNotice area="media" />}
+        
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .ghost {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: var(--space-6);
+  }
+  .ghost span {
+    aspect-ratio: var(--r);
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .ghost span:first-child {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 1024px) {
+    .ghost {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+    .ghost span,
+    .ghost span:first-child {
+      grid-column: span var(--s);
+    }
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+/** MusicCard — artwork · title · release type · year · platform links. */
+import Badge from "@/components/ui/Badge.astro";
+import { isPreview } from "@/lib/content-mode";
+import { releaseYear } from "@/lib/format";
+import { withBase } from "@/lib/url";
+import type { Release } from "@/types/content";
+import PlatformLinks from "./PlatformLinks.astro";
+
+interface Props {
+  release: Release;
+  feature?: boolean;
+  headingLevel?: 3 | 4;
+}
+const { release, feature = false, headingLevel = 3 } = Astro.props;
+const H = `h${headingLevel}` as "h3" | "h4";
+const art = release.artwork;
+---
+
+<article class:list={["mc reveal", feature && "mc--feature"]}>
+  <div class="mc__art">
+    {
+      art ? (
+        <img
+          src={withBase(art.src)}
+          srcset={art.srcset ? Object.entries(art.srcset).map(([w, s]) => `${withBase(s)} ${w}w`).join(", ") : undefined}
+          sizes={feature ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, (min-width: 480px) 50vw, 100vw"}
+          width={art.width}
+          height={art.height}
+          alt={art.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span class="mc__noart meta" aria-hidden="true">{release.type}</span>
+      )
+    }
+  </div>
+  <div class="mc__body">
+    <p class="meta mc__meta">
+      {release.type} · <time datetime={release.releaseDate}>{releaseYear(release.releaseDate)}</time>
+      {isPreview && release.status !== "DATA FINAL" && <Badge tone="muted">{release.status}</Badge>}
+    </p>
+    <H class="mc__title display">{release.title}</H>
+    <PlatformLinks links={release.links} title={release.title} />
+  </div>
+</article>
+
+<style>
+  .mc {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .mc__art {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .mc__art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-slow) var(--ease-cinematic);
+  }
+  .mc:hover .mc__art img {
+    transform: scale(1.03);
+  }
+  .mc__noart {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--foreground-subtle);
+  }
+  .mc__body {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .mc__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .mc__title {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-tight);
+  }
+  .mc--feature .mc__title {
+    font-size: var(--font-size-2xl);
+  }
+</style>

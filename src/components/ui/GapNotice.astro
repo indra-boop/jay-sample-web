@@ -1,0 +1,57 @@
+---
+/**
+ * GapNotice — preview-only panel listing DATA BELUM ADA items for an area.
+ * Never rendered in production builds (the parent section is hidden instead).
+ */
+import { formatGap, gapsFor } from "@/lib/content-gaps";
+import { isPreview } from "@/lib/content-mode";
+import type { ContentGap } from "@/types/content";
+
+interface Props {
+  area: ContentGap["area"];
+  only?: string[];
+}
+const { area, only } = Astro.props;
+const gaps = gapsFor(area).filter((g) => !only || only.includes(g.item));
+---
+
+{
+  isPreview && gaps.length > 0 && (
+    <aside class="gap" aria-label="Missing content (preview only)">
+      <p class="gap__tag meta">Preview · content pending</p>
+      <ul role="list" class="gap__list">
+        {gaps.map((g) => (
+          <li>
+            <code>{formatGap(g)}</code>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )
+}
+
+<style>
+  .gap {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklch, var(--surface) 70%, transparent);
+  }
+  .gap__tag {
+    color: var(--foreground-subtle);
+  }
+  .gap__list {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+  }
+  .gap code {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.6;
+    color: var(--foreground-muted);
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -1,0 +1,192 @@
+/*
+ * Jay Sample — design tokens
+ * Structure follows jerco-design-system conventions (primitive → semantic, OKLCH canonical,
+ * semantic names: --background / --surface / --foreground / --border / --action-*).
+ * VALUES are Jay Sample's own (monochrome, derived from the supplied logo) — no Jerco colors.
+ *
+ * Status labels:
+ *   Palette ............ ASSUMPTION (derived from logo; pending CLIENT CONFIRMATION)
+ *   Spacing/radius/motion names ... Jerco convention (packages/tokens/src/styles.css)
+ *   Breakpoints ........ ASSUMPTION (no breakpoint tokens exist in jerco-design-system)
+ *   Font ............... ASSUMPTION (Archivo, OFL-1.1, self-hosted) — replace in one place below
+ */
+
+:root {
+  /* ---------- Primitive: neutral (achromatic, hex for reference) ---------- */
+  --primitive-black-950: oklch(11.49% 0 0); /* #050505 stage */
+  --primitive-black-900: oklch(14.96% 0 0); /* #0B0B0B */
+  --primitive-black-850: oklch(17.76% 0 0); /* #111111 */
+  --primitive-black-800: oklch(20.9% 0 0); /* #181818 */
+  --primitive-black-750: oklch(23.93% 0 0); /* #1F1F1F */
+  --primitive-grey-700: oklch(30.12% 0 0); /* #2E2E2E */
+  --primitive-grey-650: oklch(34.85% 0 0); /* #3A3A3A */
+  --primitive-grey-500: oklch(53.82% 0 0); /* #6E6E6E */
+  --primitive-grey-400: oklch(64.01% 0 0); /* #8C8C8C */
+  --primitive-silver-300: oklch(73.16% 0 0); /* #A8A8A8 metal low */
+  --primitive-silver-200: oklch(78.26% 0 0); /* #B8B8B8 */
+  --primitive-silver-100: oklch(91.28% 0 0); /* #E2E2E2 metal mid */
+  --primitive-white-50: oklch(97.02% 0 0); /* #F5F5F5 */
+  --primitive-white: oklch(100% 0 0); /* #FFFFFF metal high */
+  --primitive-red-300: oklch(76.81% 0.137 26.1); /* #FF8F85 form error text only */
+  --primitive-green-200: oklch(85.11% 0.09 154.5); /* #9FE0B4 form success text only */
+
+  /* ---------- Spacing (Jerco scale 0–12 + Jay editorial extension 16–40) ---------- */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem; /* extension */
+  --space-20: 5rem; /* extension */
+  --space-24: 6rem; /* extension */
+  --space-32: 8rem; /* extension */
+  --space-40: 10rem; /* extension */
+
+  /* Brief aliases (xs…2xl) → Jerco scale */
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-4);
+  --space-md: var(--space-6);
+  --space-lg: var(--space-10);
+  --space-xl: var(--space-16);
+  --space-2xl: var(--space-24);
+
+  /* Fluid section rhythm */
+  --section-pad-y: clamp(var(--space-20), 12vw, var(--space-40));
+  --gutter: clamp(var(--space-4), 4vw, var(--space-12));
+
+  /* ---------- Radius: near-sharp, editorial ---------- */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-full: 999px;
+
+  /* ---------- Layout ---------- */
+  --container-max: 90rem; /* 1440px */
+  --container-wide: 120rem; /* 1920px hero/media bleed cap */
+  --measure: 38rem; /* comfortable reading line */
+  --header-height: 4.5rem;
+
+  /* Breakpoints (ASSUMPTION) — CSS custom properties can't drive @media; kept for docs/JS.
+     sm 480 · md 768 · lg 1024 · xl 1280 · 2xl 1440 */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --bp-2xl: 1440px;
+
+  /* ---------- Typography (ASSUMPTION: Archivo variable, wdth 62–125, wght 100–900) ---------- */
+  --font-sans:
+    "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-stretch-display: 78%; /* condensed grotesk feel */
+  --font-stretch-body: 100%;
+  --font-stretch-meta: 112%; /* slightly extended metadata */
+
+  --font-size-2xs: 0.6875rem; /* 11px meta */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --font-size-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  --font-size-3xl: clamp(2.5rem, 1.6rem + 4.2vw, 5.5rem);
+  --font-size-4xl: clamp(3rem, 1.4rem + 7.6vw, 9rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 800;
+
+  --line-height-display: 0.92;
+  --line-height-tight: 1.15;
+  --line-height-normal: 1.55;
+  --line-height-relaxed: 1.7;
+
+  --tracking-display: -0.015em;
+  --tracking-meta: 0.18em;
+  --tracking-button: 0.14em;
+
+  /* ---------- Motion (Jerco names + Jay cinematic extension) ---------- */
+  --motion-fast: 140ms;
+  --motion-normal: 240ms;
+  --motion-slow: 480ms;
+  --motion-reveal: 1600ms; /* extension: signature reveal */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Brief aliases */
+  --transition-fast: var(--motion-fast) var(--ease-standard);
+  --transition-normal: var(--motion-normal) var(--ease-standard);
+  --transition-slow: var(--motion-slow) var(--ease-cinematic);
+
+  --z-header: 30;
+  --z-dialog: 50;
+
+  /* Density (Jerco: comfortable = 48px) — touch targets ≥ 44px */
+  --control-height: 48px;
+  --control-padding-x: 1.5rem;
+  --tap-min: 44px;
+}
+
+/* ---------- Semantic theme: jay-sample-dark (the only theme; site is dark-first) ---------- */
+:root,
+[data-theme="jay-sample-dark"] {
+  color-scheme: dark;
+
+  --background: var(--primitive-black-950);
+  --surface: var(--primitive-black-900);
+  --surface-raised: var(--primitive-black-850);
+  --surface-hover: var(--primitive-black-800);
+
+  --foreground: var(--primitive-white-50);
+  --foreground-muted: var(--primitive-silver-200);
+  --foreground-subtle: var(--primitive-grey-400);
+
+  --border: var(--primitive-black-750); /* decorative only */
+  --border-strong: var(--primitive-grey-650);
+  --border-input: var(--primitive-grey-500); /* ≥3:1 vs surface (WCAG 1.4.11) */
+
+  --action-primary: var(--primitive-white-50);
+  --action-primary-hover: var(--primitive-white);
+  --action-primary-foreground: var(--primitive-black-950);
+  --action-secondary: transparent;
+  --action-secondary-hover: var(--surface-hover);
+
+  --status-danger: var(--primitive-red-300);
+  --status-success: var(--primitive-green-200);
+
+  --focus-ring: var(--primitive-white);
+
+  /* Metallic accent — logo, selected headings, hairlines, active states only */
+  --metal-high: var(--primitive-white);
+  --metal-mid: var(--primitive-silver-100);
+  --metal-low: var(--primitive-silver-300);
+  --gradient-metal: linear-gradient(
+    172deg,
+    var(--metal-high) 0%,
+    var(--metal-mid) 46%,
+    var(--metal-low) 100%
+  );
+  --gradient-hairline: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--metal-mid) 55%, transparent),
+    transparent
+  );
+
+  /* Brief aliases (--color-*) → Jerco semantic names */
+  --color-bg: var(--background);
+  --color-surface: var(--surface);
+  --color-text: var(--foreground);
+  --color-text-muted: var(--foreground-muted);
+  --color-border: var(--border-strong);
+  --color-accent: var(--metal-mid);
+  --color-accent-secondary: var(--metal-low);
+}

@@ -1,0 +1,62 @@
+---
+/** Lightbox — single native dialog shared by every MediaGrid item on the page. */
+import IconButton from "@/components/ui/IconButton.astro";
+import Modal from "@/components/ui/Modal.astro";
+---
+
+<Modal id="lightbox" label="Image viewer" fullscreen class="lb">
+  <div class="lb__inner">
+    <div class="lb__bar container">
+      <p class="meta" data-lightbox-counter aria-live="polite"></p>
+      <IconButton label="Close image viewer" attrs={{ "data-modal-close": true }}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"></path></svg>
+      </IconButton>
+    </div>
+    <figure class="lb__stage">
+      <img data-lightbox-img alt="" />
+      <figcaption class="meta lb__cap" data-lightbox-caption></figcaption>
+    </figure>
+    <div class="lb__nav container">
+      <IconButton label="Previous image" attrs={{ "data-lightbox-prev": true }}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </IconButton>
+      <IconButton label="Next image" attrs={{ "data-lightbox-next": true }}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+      </IconButton>
+    </div>
+  </div>
+</Modal>
+
+<script>
+  import "@/client/lightbox";
+</script>
+
+<style>
+  .lb__inner {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100dvh;
+  }
+  .lb__bar,
+  .lb__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+  }
+  .lb__stage {
+    display: grid;
+    place-items: center;
+    gap: var(--space-3);
+    min-height: 0;
+    padding-inline: var(--gutter);
+  }
+  .lb__stage img {
+    max-width: 100%;
+    max-height: calc(100dvh - 2 * var(--header-height) - 3rem);
+    object-fit: contain;
+  }
+  .lb__cap {
+    text-align: center;
+  }
+</style>

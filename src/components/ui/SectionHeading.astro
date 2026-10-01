@@ -1,0 +1,54 @@
+---
+/** Editorial section heading: "01 ── LATEST / MUSIC" + optional action slot. */
+interface Props {
+  index?: string;
+  title: string;
+  id: string;
+  level?: 1 | 2;
+  metal?: boolean;
+}
+const { index, title, id, level = 2, metal = false } = Astro.props;
+const Tag = level === 1 ? "h1" : "h2";
+---
+
+<header class="sh reveal">
+  <div class="sh__lead">
+    {index && <span class="sh__index meta" aria-hidden="true">{index}</span>}
+    <span class="sh__rule" aria-hidden="true"></span>
+  </div>
+  <div class="sh__row">
+    <Tag id={id} class:list={["sh__title display", metal && "metal-text"]}>{title}</Tag>
+    {Astro.slots.has("action") && <div class="sh__action"><slot name="action" /></div>}
+  </div>
+</header>
+
+<style>
+  .sh {
+    display: grid;
+    gap: var(--space-5);
+    margin-bottom: clamp(var(--space-10), 6vw, var(--space-16));
+  }
+  .sh__lead {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .sh__index {
+    color: var(--foreground-subtle);
+  }
+  .sh__rule {
+    flex: 0 0 clamp(2.5rem, 8vw, 6rem);
+    height: 1px;
+    background: var(--border-strong);
+  }
+  .sh__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+  }
+  .sh__title {
+    font-size: var(--font-size-3xl);
+  }
+</style>

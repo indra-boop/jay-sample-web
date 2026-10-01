@@ -1,0 +1,10 @@
+---
+import MediaSection from "@/components/sections/MediaSection.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hiddenSections } from "@/lib/content";
+---
+
+<BaseLayout title="Media" description="Photos, video and live sets of Jay Sample." hiddenNav={hiddenSections()}>
+  <div class="page-top"></div>
+  <MediaSection variant="full" index="04" />
+</BaseLayout>

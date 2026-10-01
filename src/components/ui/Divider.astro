@@ -1,0 +1,22 @@
+---
+/** Hairline divider. `metal` uses the silver gradient (decorative). */
+interface Props {
+  metal?: boolean;
+  class?: string;
+}
+const { metal = false, class: className } = Astro.props;
+---
+
+<hr class:list={["divider", metal && "divider--metal", className]} />
+
+<style>
+  .divider {
+    height: 1px;
+    margin: 0;
+    border: 0;
+    background: var(--border);
+  }
+  .divider--metal {
+    background: var(--gradient-hairline);
+  }
+</style>

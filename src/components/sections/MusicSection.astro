@@ -1,0 +1,129 @@
+---
+/**
+ * 01 — Latest / Music. Releases (when they exist) + mixes with inline players.
+ * Home: up to 3 releases + latest 3 mixes. /music: everything.
+ */
+import MixList from "@/components/music/MixList.astro";
+import MusicGrid from "@/components/music/MusicGrid.astro";
+import Button from "@/components/ui/Button.astro";
+import GapNotice from "@/components/ui/GapNotice.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import { getMixes, getReleases } from "@/lib/content";
+import { isPreview } from "@/lib/content-mode";
+
+interface Props {
+  variant?: "teaser" | "full";
+  index?: string;
+}
+const { variant = "teaser", index = "01" } = Astro.props;
+const allReleases = getReleases();
+const allMixes = getMixes();
+const releases = variant === "teaser" ? allReleases.slice(0, 3) : allReleases;
+const mixes = variant === "teaser" ? allMixes.slice(0, 3) : allMixes;
+const empty = releases.length === 0 && mixes.length === 0;
+const render = !empty || isPreview || variant === "full";
+const more = allReleases.length > releases.length || allMixes.length > mixes.length;
+const mixcloudProfile = allMixes.find((m) => m.provider === "mixcloud") ? "https://www.mixcloud.com/jay-sample/" : undefined;
+---
+
+{
+  render && (
+    <section id="music" class="section" aria-labelledby="music-title">
+      <div class="container">
+        <SectionHeading index={index} title={variant === "teaser" ? "Latest / Music" : "Music"} id="music-title" level={variant === "full" ? 1 : 2}>
+          {variant === "teaser" && more && (
+            <Button slot="action" href="/music" variant="ghost" arrow>
+              All music
+            </Button>
+          )}
+        </SectionHeading>
+
+        {releases.length > 0 && <MusicGrid releases={releases} />}
+
+        {mixes.length > 0 && (
+          <div class:list={["mixes-block", releases.length > 0 && "mixes-block--after"]}>
+            <div class="mixes-head">
+              <h3 class="meta">Mixes</h3>
+              {variant === "full" && mixcloudProfile && (
+                <a class="meta mixes-head__link" href={mixcloudProfile} target="_blank" rel="noopener noreferrer">
+                  Follow on Mixcloud ↗<span class="visually-hidden"> (opens in a new tab)</span>
+                </a>
+              )}
+            </div>
+            <MixList sets={mixes} />
+          </div>
+        )}
+
+        {empty &&
+          (isPreview ? (
+            <div class="ghost" aria-hidden="true">
+              <span class="ghost__frame ghost__frame--lead" />
+              <span class="ghost__frame" />
+              <span class="ghost__frame" />
+            </div>
+          ) : (
+            <p class="prose">New music will be published here.</p>
+          ))}
+        {releases.length === 0 && <GapNotice area="music" only={["official releases (Spotify / Apple Music / Beatport …)"]} />}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .mixes-block--after {
+    margin-top: var(--space-20);
+  }
+  .mixes-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .mixes-head h3 {
+    color: var(--foreground-subtle);
+  }
+  .mixes-head__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    text-decoration: none;
+  }
+  .mixes-head__link:hover {
+    color: var(--foreground);
+  }
+  .mixes-block + :global(.gap) {
+    margin-top: var(--space-8);
+  }
+  .ghost {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: var(--space-6);
+  }
+  .ghost__frame {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background:
+      linear-gradient(135deg, transparent 49.6%, var(--border) 50%, transparent 50.4%),
+      var(--surface);
+  }
+  .ghost__frame--lead {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
+  }
+  @media (min-width: 1024px) {
+    .ghost {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+    .ghost__frame--lead {
+      grid-column: auto;
+      aspect-ratio: 1;
+    }
+    .ghost__frame:not(.ghost__frame--lead) {
+      align-self: end;
+    }
+  }
+</style>

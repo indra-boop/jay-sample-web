@@ -1,0 +1,246 @@
+---
+/**
+ * BookingForm — minimal personal data: name, email (+ optional phone). No address, no ID.
+ * Submits JSON to booking.formEndpoint, or falls back to mailto: bookingEmail.
+ * Neither configured → preview message, nothing sent (DATA BELUM ADA).
+ */
+import Button from "@/components/ui/Button.astro";
+import { booking } from "@/data/booking";
+import { verified } from "@/lib/content";
+
+const endpoint = verified(booking.formEndpoint) ?? "";
+const mailto = verified(booking.bookingEmail) ?? "";
+const privacy = verified(booking.privacyNotice);
+
+type FieldDef = {
+  id: string;
+  name: string;
+  label: string;
+  type?: "text" | "email" | "tel" | "date" | "number";
+  required?: boolean;
+  autocomplete?: string;
+  hint?: string;
+  span?: "full";
+  inputmode?: "tel" | "email" | "numeric";
+  pattern?: string;
+  patternMessage?: string;
+  options?: string[];
+  textarea?: boolean;
+  minlength?: number;
+};
+
+const fields: FieldDef[] = [
+  { id: "bk-name", name: "name", label: "Name", required: true, autocomplete: "name" },
+  { id: "bk-company", name: "company", label: "Company / Venue", autocomplete: "organization" },
+  { id: "bk-email", name: "email", label: "Email", type: "email", required: true, autocomplete: "email", inputmode: "email" },
+  {
+    id: "bk-phone",
+    name: "phone",
+    label: "WhatsApp / Phone",
+    type: "tel",
+    autocomplete: "tel",
+    inputmode: "tel",
+    hint: "Include country code, e.g. +62…",
+    pattern: "^\\+?[0-9\\s\\-()]{7,20}$",
+    patternMessage: "Use digits only, with country code, e.g. +62 812 3456 7890.",
+  },
+  { id: "bk-event", name: "eventName", label: "Event name", autocomplete: "off" },
+  { id: "bk-date", name: "eventDate", label: "Event date", type: "date", required: true },
+  { id: "bk-location", name: "location", label: "Location", required: true, hint: "City, country", autocomplete: "address-level2" },
+  { id: "bk-type", name: "eventType", label: "Event type", required: true, options: booking.eventTypes },
+  { id: "bk-audience", name: "audience", label: "Estimated audience", options: booking.audienceRanges },
+  { id: "bk-format", name: "format", label: "Performance format", options: booking.performanceFormats },
+  { id: "bk-message", name: "message", label: "Message", required: true, textarea: true, span: "full", minlength: 10, hint: "Set time, duration, budget range, technical setup — anything that helps." },
+];
+---
+
+<form class="bf" data-booking-form data-endpoint={endpoint} data-mailto={mailto} novalidate aria-describedby="bk-required-note">
+  <p id="bk-required-note" class="bf__note meta">Fields marked * are required</p>
+
+  <div class="bf__grid">
+    {
+      fields.map((f) => {
+        const describedBy = [f.hint && `${f.id}-hint`, `${f.id}-error`].filter(Boolean).join(" ");
+        return (
+          <div class:list={["bf__field", f.span === "full" && "bf__field--full"]}>
+            <label for={f.id} class="bf__label">
+              <span data-label-text>{f.label}</span>
+              {f.required && <span aria-hidden="true"> *</span>}
+            </label>
+            {f.options ? (
+              <select id={f.id} name={f.name} required={f.required} aria-describedby={describedBy} class="bf__control">
+                <option value="">{f.required ? "Select…" : "Optional"}</option>
+                {f.options.map((o) => (
+                  <option value={o}>{o}</option>
+                ))}
+              </select>
+            ) : f.textarea ? (
+              <textarea id={f.id} name={f.name} rows="5" required={f.required} minlength={f.minlength} aria-describedby={describedBy} class="bf__control" />
+            ) : (
+              <input
+                id={f.id}
+                name={f.name}
+                type={f.type ?? "text"}
+                required={f.required}
+                autocomplete={f.autocomplete}
+                inputmode={f.inputmode}
+                pattern={f.pattern}
+                data-pattern-message={f.patternMessage}
+                aria-describedby={describedBy}
+                class="bf__control"
+              />
+            )}
+            {f.hint && (
+              <p id={`${f.id}-hint`} class="bf__hint">
+                {f.hint}
+              </p>
+            )}
+            <p id={`${f.id}-error`} class="bf__error" hidden />
+          </div>
+        );
+      })
+    }
+
+    <!-- Honeypot: hidden from people and assistive tech -->
+    <div class="bf__hp" aria-hidden="true">
+      <label for="bk-website">Website</label>
+      <input id="bk-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+  </div>
+
+  {privacy && <p class="bf__privacy">{privacy}</p>}
+
+  <div class="bf__submit">
+    <Button type="submit" variant="primary" size="lg" arrow>Send booking request</Button>
+    <p class="bf__status" data-form-status role="status" aria-live="polite" hidden></p>
+  </div>
+</form>
+
+<script>
+  import "@/client/booking-form";
+</script>
+
+<style>
+  .bf {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .bf__note {
+    color: var(--foreground-subtle);
+  }
+  .bf__grid {
+    display: grid;
+    gap: var(--space-6) var(--space-6);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .bf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .bf__field--full {
+      grid-column: 1 / -1;
+    }
+  }
+  .bf__field {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+  .bf__label {
+    font-size: var(--font-size-xs);
+    font-stretch: var(--font-stretch-meta);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-meta);
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+  }
+  .bf__control {
+    width: 100%;
+    min-height: var(--control-height);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--foreground);
+    font-size: var(--font-size-md); /* ≥16px: no iOS zoom */
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+  select.bf__control {
+    appearance: none;
+    padding-right: var(--space-10);
+    background-image: linear-gradient(45deg, transparent 50%, var(--foreground-muted) 50%),
+      linear-gradient(135deg, var(--foreground-muted) 50%, transparent 50%);
+    background-position:
+      calc(100% - 22px) 50%,
+      calc(100% - 16px) 50%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+  }
+  textarea.bf__control {
+    resize: vertical;
+    min-height: 9rem;
+  }
+  .bf__control:hover {
+    border-color: var(--foreground-subtle);
+  }
+  .bf__control:focus-visible {
+    border-color: var(--foreground);
+    background: var(--surface-raised);
+  }
+  .bf__control[aria-invalid="true"] {
+    border-color: var(--status-danger);
+  }
+  input[type="date"].bf__control::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+  }
+  .bf__hint {
+    font-size: var(--font-size-sm);
+    color: var(--foreground-subtle);
+  }
+  .bf__error {
+    font-size: var(--font-size-sm);
+    color: var(--status-danger);
+  }
+  .bf__error::before {
+    content: "⚠ ";
+  }
+  .bf__privacy {
+    max-width: var(--measure);
+    font-size: var(--font-size-sm);
+    color: var(--foreground-subtle);
+  }
+  .bf__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .bf__submit {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  @media (max-width: 479px) {
+    .bf__submit :global(.btn) {
+      width: 100%;
+    }
+  }
+  .bf__status {
+    max-width: var(--measure);
+    padding: var(--space-3) var(--space-4);
+    border-left: 2px solid var(--border-strong);
+    color: var(--foreground-muted);
+  }
+  .bf__status[data-tone="error"] {
+    border-color: var(--status-danger);
+    color: var(--status-danger);
+  }
+  .bf__status[data-tone="success"] {
+    border-color: var(--status-success);
+    color: var(--status-success);
+  }
+</style>

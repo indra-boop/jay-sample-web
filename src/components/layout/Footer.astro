@@ -1,0 +1,121 @@
+---
+/** Minimal footer: logo · nav · configured socials · confirmed booking contact · ©. */
+import JaySampleLogo from "@/components/brand/JaySampleLogo.astro";
+import { booking } from "@/data/booking";
+import { getSocials, verified } from "@/lib/content";
+import { socialLabel } from "@/lib/platforms";
+import { withBase } from "@/lib/url";
+import Navigation from "./Navigation.astro";
+
+interface Props {
+  hidden?: readonly string[];
+}
+const { hidden = [] } = Astro.props;
+const socials = getSocials();
+const email = verified(booking.bookingEmail);
+const management = verified(booking.management);
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="ftr__inner container">
+    <a href={withBase("/")} class="ftr__logo" aria-label="Jay Sample — home">
+      <JaySampleLogo decorative sizes="(min-width: 1024px) 260px, 50vw" />
+    </a>
+
+    <nav aria-label="Footer" class="ftr__col">
+      <p class="meta ftr__heading">Navigate</p>
+      <Navigation hidden={hidden} />
+    </nav>
+
+    {
+      socials.length > 0 && (
+        <div class="ftr__col">
+          <p class="meta ftr__heading">Follow</p>
+          <ul role="list" class="ftr__list">
+            {socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  {socialLabel[s.platform]}
+                  <span class="visually-hidden">(opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      (email || management) && (
+        <div class="ftr__col">
+          <p class="meta ftr__heading">Booking</p>
+          <ul role="list" class="ftr__list">
+            {email && (
+              <li>
+                <a href={`mailto:${email}`}>{email}</a>
+              </li>
+            )}
+            {management && <li>{management.name}</li>}
+          </ul>
+        </div>
+      )
+    }
+
+    <p class="ftr__copy meta">© {year} Jay Sample</p>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-16) var(--space-10);
+  }
+  .ftr__inner {
+    display: grid;
+    gap: var(--space-10) var(--space-8);
+    grid-template-columns: 1fr;
+  }
+  .ftr__logo {
+    display: block;
+    width: min(220px, 60vw);
+    opacity: 0.9;
+  }
+  .ftr__heading {
+    margin-bottom: var(--space-3);
+    color: var(--foreground-subtle);
+  }
+  .ftr__col :global(.nav) {
+    flex-wrap: wrap;
+    column-gap: var(--space-6);
+  }
+  .ftr__list {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+  }
+  .ftr__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    color: var(--foreground-muted);
+    text-decoration: none;
+  }
+  .ftr__list a:hover {
+    color: var(--foreground);
+  }
+  .ftr__copy {
+    color: var(--foreground-subtle);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+  @media (min-width: 768px) {
+    .ftr__inner {
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      align-items: start;
+    }
+    .ftr__copy {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

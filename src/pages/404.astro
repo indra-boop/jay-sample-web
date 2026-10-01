@@ -1,0 +1,28 @@
+---
+import Button from "@/components/ui/Button.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hiddenSections } from "@/lib/content";
+---
+
+<BaseLayout title="Page not found" noindex hiddenNav={hiddenSections()}>
+  <section class="nf container">
+    <p class="meta">404</p>
+    <h1 class="display nf__title">Off the set list</h1>
+    <p class="prose">This page doesn’t exist.</p>
+    <Button href="/" variant="secondary" arrow>Back home</Button>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+    min-height: 70svh;
+    align-content: center;
+    padding-top: var(--header-height);
+  }
+  .nf__title {
+    font-size: var(--font-size-3xl);
+  }
+</style>

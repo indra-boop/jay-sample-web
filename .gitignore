@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+# Internal working docs (spec, QA report, gap list, screenshots) — kept outside the public repo
+docs/

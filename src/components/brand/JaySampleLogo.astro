@@ -1,0 +1,54 @@
+---
+/**
+ * JaySampleLogo — the master brand asset. Never redrawn, recoloured or stretched.
+ * Exports are trimmed to optical bounds by scripts/build_brand_exports.py, so the
+ * box here IS the visual box (no hidden padding) and aspect ratio is always preserved.
+ */
+import { LOGO_BASE as RAW_LOGO_BASE, LOGO_OPTICAL, LOGO_WIDTHS } from "@/data/generated/brand-manifest";
+import { withBase } from "@/lib/url";
+
+const LOGO_BASE = withBase(RAW_LOGO_BASE);
+
+interface Props {
+  /** Responsive `sizes` attribute — describe the rendered width. */
+  sizes?: string;
+  /** Above-the-fold usage: eager + high fetch priority (LCP). */
+  priority?: boolean;
+  /** Decorative duplicate (e.g. a second logo next to visible name) → alt="". */
+  decorative?: boolean;
+  class?: string;
+}
+
+const { sizes = "(min-width: 1024px) 40vw, 80vw", priority = false, decorative = false, class: className } = Astro.props;
+const set = (ext: string) => LOGO_WIDTHS.map((w) => `${LOGO_BASE}-${w}w.${ext} ${w}w`).join(", ");
+const fallbackWidth = LOGO_WIDTHS.includes(800 as never) ? 800 : LOGO_WIDTHS[LOGO_WIDTHS.length - 1];
+---
+
+<picture class:list={["logo", className]} style={`aspect-ratio: ${LOGO_OPTICAL.width} / ${LOGO_OPTICAL.height}`}>
+  <source type="image/avif" srcset={set("avif")} sizes={sizes} />
+  <source type="image/webp" srcset={set("webp")} sizes={sizes} />
+  <img
+    src={`${LOGO_BASE}-${fallbackWidth}w.png`}
+    srcset={set("png")}
+    sizes={sizes}
+    width={LOGO_OPTICAL.width}
+    height={LOGO_OPTICAL.height}
+    alt={decorative ? "" : "Jay Sample"}
+    loading={priority ? "eager" : "lazy"}
+    decoding={priority ? "sync" : "async"}
+    fetchpriority={priority ? "high" : "auto"}
+    draggable="false"
+  />
+</picture>
+
+<style>
+  .logo {
+    display: block;
+  }
+  .logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+  }
+</style>

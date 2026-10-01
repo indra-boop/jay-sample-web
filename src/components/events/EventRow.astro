@@ -1,0 +1,130 @@
+---
+/**
+ * EventRow — editorial row on desktop (date | event/venue | city | action),
+ * collapses to a stacked card under 768px with the SAME markup (no duplicate DOM).
+ */
+import Badge from "@/components/ui/Badge.astro";
+import Button from "@/components/ui/Button.astro";
+import { isPreview } from "@/lib/content-mode";
+import { eventDateParts } from "@/lib/format";
+import type { ArtistEvent } from "@/types/content";
+
+interface Props {
+  event: ArtistEvent;
+  past?: boolean;
+}
+const { event, past = false } = Astro.props;
+const d = eventDateParts(event.date);
+const statusLabel: Record<ArtistEvent["eventStatus"], string> = {
+  "on-sale": "Tickets",
+  "sold-out": "Sold out",
+  free: "Free entry",
+  "invite-only": "Invite only",
+  cancelled: "Cancelled",
+  postponed: "Postponed",
+  announced: "Announced",
+};
+const title = event.eventName ?? event.venue;
+const showTicket = !past && event.ticketUrl && event.eventStatus === "on-sale";
+---
+
+<li class:list={["er reveal", past && "er--past"]} data-event-date={event.date}>
+  <time class="er__date" datetime={event.date}>
+    <span class="er__day display">{d.day}</span>
+    <span class="er__month meta">{d.month} {d.year}</span>
+  </time>
+  <div class="er__what">
+    <h3 class="er__title display">{title}</h3>
+    {event.eventName && <p class="er__venue">{event.venue}</p>}
+  </div>
+  <p class="er__where meta">{event.city}, {event.country}</p>
+  <div class="er__action">
+    {
+      showTicket ? (
+        <Button href={event.ticketUrl} variant="secondary" external arrow attrs={{ "aria-label": `Tickets for ${title}, ${d.day} ${d.month} ${d.year} (opens in a new tab)` }}>
+          Tickets
+        </Button>
+      ) : (
+        !past && <Badge tone="outline">{statusLabel[event.eventStatus]}</Badge>
+      )
+    }
+    {isPreview && event.status !== "DATA FINAL" && <Badge tone="muted">{event.status}</Badge>}
+  </div>
+</li>
+
+<style>
+  .er {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "date what"
+      "date where"
+      "action action";
+    gap: var(--space-2) var(--space-5);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--border-strong);
+  }
+  .er:last-child {
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .er__date {
+    grid-area: date;
+    display: grid;
+    align-content: start;
+    min-width: 4.5rem;
+  }
+  .er__day {
+    font-size: var(--font-size-2xl);
+  }
+  .er__what {
+    grid-area: what;
+    min-width: 0;
+  }
+  .er__title {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-tight);
+  }
+  .er__venue {
+    margin-top: var(--space-1);
+    color: var(--foreground-muted);
+  }
+  .er__where {
+    grid-area: where;
+    overflow-wrap: anywhere;
+  }
+  .er__action {
+    grid-area: action;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    padding-top: var(--space-2);
+  }
+  .er__action :global(.btn) {
+    flex: 1 1 auto;
+  }
+  .er--past {
+    color: var(--foreground-muted);
+  }
+
+  @media (min-width: 768px) {
+    .er {
+      grid-template-columns: 7rem minmax(0, 2.2fr) minmax(0, 1fr) auto;
+      grid-template-areas: "date what where action";
+      align-items: center;
+      gap: var(--space-8);
+      padding-block: var(--space-8);
+      transition: background-color var(--transition-normal);
+    }
+    .er:hover {
+      background: linear-gradient(90deg, transparent, var(--surface) 20%, var(--surface) 80%, transparent);
+    }
+    .er__action {
+      padding-top: 0;
+      justify-content: flex-end;
+    }
+    .er__action :global(.btn) {
+      flex: 0 0 auto;
+    }
+  }
+</style>

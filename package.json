@@ -1,0 +1,27 @@
+{
+  "name": "jay-sample-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Official website — Jay Sample (DJ / Artist). Static Astro build, zero framework runtime.",
+  "scripts": {
+    "dev": "astro dev",
+    "brand:export": "python3 scripts/build_brand_exports.py",
+    "check": "astro check",
+    "contrast": "node scripts/check-contrast.mjs",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "build:production": "CONTENT_MODE=production astro build && CONTENT_MODE=production node scripts/postbuild.mjs",
+    "gate": "node scripts/content-gate.mjs",
+    "qa": "npm run check && npm run contrast && npm run build && npm run gate",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "5.3.0",
+    "astro": "5.18.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/node": "22.20.4",
+    "typescript": "5.9.3"
+  }
+}

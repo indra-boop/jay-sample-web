@@ -1,0 +1,84 @@
+---
+/** Full-screen mobile navigation on native <dialog> (focus-trapped, Esc closes, focus returns). */
+import ArtistMark from "@/components/brand/ArtistMark.astro";
+import Button from "@/components/ui/Button.astro";
+import IconButton from "@/components/ui/IconButton.astro";
+import Modal from "@/components/ui/Modal.astro";
+import { getSocials } from "@/lib/content";
+import { socialLabel } from "@/lib/platforms";
+import Navigation from "./Navigation.astro";
+
+interface Props {
+  hidden?: readonly string[];
+}
+const { hidden = [] } = Astro.props;
+const socials = getSocials();
+---
+
+<Modal id="mobile-menu" label="Site menu" fullscreen class="mm">
+  <div class="mm__inner container">
+    <div class="mm__bar">
+      <ArtistMark />
+      <IconButton label="Close menu" attrs={{ "data-modal-close": true }}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M5 5l14 14M19 5L5 19"></path>
+        </svg>
+      </IconButton>
+    </div>
+    <nav aria-label="Mobile primary" class="mm__nav">
+      <Navigation variant="stacked" hidden={hidden} />
+    </nav>
+    <div class="mm__foot">
+      <Button href="/booking" variant="primary" block arrow>Book Jay Sample</Button>
+      {
+        socials.length > 0 && (
+          <ul role="list" class="mm__socials">
+            {socials.map((s) => (
+              <li>
+                <a class="meta" href={s.url} target="_blank" rel="noopener noreferrer">
+                  {socialLabel[s.platform]}
+                  <span class="visually-hidden">(opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</Modal>
+
+<style>
+  .mm__inner {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100dvh;
+    padding-block: var(--space-3) var(--space-8);
+  }
+  .mm__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+  }
+  .mm__nav {
+    align-self: center;
+    padding-block: var(--space-10);
+  }
+  .mm__foot {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .mm__socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin: 0;
+  }
+  .mm__socials a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    text-decoration: none;
+  }
+</style>

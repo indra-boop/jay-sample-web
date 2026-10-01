@@ -1,0 +1,25 @@
+---
+/** MixList — editorial list of mixes with inline click-to-load players. */
+import type { LiveSet } from "@/types/content";
+import MixRow from "./MixRow.astro";
+
+interface Props {
+  sets: LiveSet[];
+  label?: string;
+}
+const { sets, label = "Mixes" } = Astro.props;
+---
+
+<ol role="list" class="mixes" aria-label={label}>
+  {sets.map((s, i) => <MixRow set={s} index={i} />)}
+</ol>
+
+<script>
+  import "@/client/embed";
+</script>
+
+<style>
+  .mixes {
+    margin: 0;
+  }
+</style>

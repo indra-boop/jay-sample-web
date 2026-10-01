@@ -1,0 +1,50 @@
+---
+/**
+ * Modal — thin wrapper over native <dialog> (focus trap, Esc, inert background, top layer).
+ * Open with: document.getElementById(id).showModal(); trigger elements use
+ * data-modal-open="<id>" and are wired by src/client/modal.ts.
+ */
+interface Props {
+  id: string;
+  label: string;
+  class?: string;
+  fullscreen?: boolean;
+}
+const { id, label, class: className, fullscreen = false } = Astro.props;
+---
+
+<dialog id={id} class:list={["modal", fullscreen && "modal--full", className]} aria-label={label}>
+  <slot />
+</dialog>
+
+<script>
+  import "@/client/modal";
+</script>
+
+<style>
+  .modal {
+    max-width: min(100vw - 2 * var(--gutter), 72rem);
+    max-height: 100dvh;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+  }
+  .modal--full {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    margin: 0;
+    border: 0;
+    background: var(--background);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .modal[open] {
+      animation: modal-in var(--motion-slow) var(--ease-cinematic);
+    }
+  }
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+    }
+  }
+</style>
