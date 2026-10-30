@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, jerco-public, linode]
     env:
       # Preview/staging build: noindex, "DATA BELUM ADA" notices visible, booking form sends nothing.
       CONTENT_MODE: preview
@@ -40,7 +40,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, jerco-public, linode]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
